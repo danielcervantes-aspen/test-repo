@@ -1,0 +1,21 @@
+name: Check main.py output
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  check-output:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Verify output
+        shell: python
+        run: |
+          import subprocess
+          import sys
+
+          output = subprocess.check_output([sys.executable, "main.py"], text=True).rstrip("\r\n")
+          if output != "Hello, Daniel!":
+              raise SystemExit(f"Expected 'Hello, Daniel!', got {output!r}")
